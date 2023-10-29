@@ -37,16 +37,18 @@ void add_to_it(std::vector< std::string > &stocks, std::vector< std::string > &p
 
     if(found){
         if(token[token.size()-1]=='s'){
-            if(prices[index]<price){
+            if(prices[index]>price){
                 std::cout<<switch_it(token)<<'\n';
+                prices[index]=price;
             }
             else{
                 std::cout<<"No Trade\n";
             }
         }
         else{
-            if(prices[index]>price){
+            if(prices[index]<price){
                 std::cout<<switch_it(token)<<'\n';
+                prices[index]=price;
             }
             else{
                 std::cout<<"No Trade\n";
@@ -68,27 +70,27 @@ int main(int argv,char** argc) {
     sleep(5);
     std::string message = rcv.readIML();
     if(argc[1][0]=='1'){
-        // std::vector<std::string> stocks;
-        // std::vector<std::string> prices;
-        // // char* charArray = new char[message.size() + 1];  // +1 for null terminator
-        // // std::copy(message.begin(), message.end(), charArray);
-        // // charArray[message.size()] = '\0';  // Null-terminate the array
-        // // std::string tok = strtok(charArray, "#");
+        std::vector<std::string> stocks;
+        std::vector<std::string> prices;
+        // char* charArray = new char[message.size() + 1];  // +1 for null terminator
+        // std::copy(message.begin(), message.end(), charArray);
+        // charArray[message.size()] = '\0';  // Null-terminate the array
+        // std::string tok = strtok(charArray, "#");
         
-        // int iter=0;
-        // std::string temp;
-        // while (message[iter]!='$')
-        // {
-        //     while(message[iter]!='#'){
-        //         temp+=message[iter];
-        //         iter++;
-        //     }
-        //     if(temp[0]=='\n'){
-        //         temp.erase(0,1);
-        //     }
-        //     add_to_it(stocks,prices,temp);
-        //     temp="";
-        // }
+        int iter=0;
+        std::string temp;
+        while (message[iter]!='$')
+        {
+            while(message[iter]!='#'){
+                temp+=message[iter];
+                iter++;
+            }
+            if(temp[0]=='\n'){
+                temp.erase(0,1);
+            }
+            add_to_it(stocks,prices,temp);
+            temp="";
+        }
         std::cout<<message;        
     }
     else if(argc[1][0]=='2'){
