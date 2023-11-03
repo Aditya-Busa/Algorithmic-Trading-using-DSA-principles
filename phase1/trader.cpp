@@ -5,11 +5,11 @@ struct  stocks{
     std:: string s;
     std:: string bests_nt;//Non traded best price for sell
     std:: string bestb_nt;//Non traded best price for buy
-    std:: string price_l;//last traded price
+    int price_l;//last traded price
     //std:: string price;//present price
     // char v;
     //  TreeNode(int key, TreeNode *leftChild, TreeNode *rightChild, TreeNode *parent) : key(key), left(leftChild), right(rightChild), parent(parent) {
-    stocks(std::string s, std:: string bests_nt, std:: string bestb_nt, std:: string price_l) : s(s), bests_nt(bests_nt), bestb_nt(bestb_nt), price_l(price_l){}
+    stocks(std::string s, std:: string bests_nt, std:: string bestb_nt, int price_l) : s(s), bests_nt(bests_nt), bestb_nt(bestb_nt), price_l(price_l){}
 };
 
 std::string switch_it(std:: string it){
@@ -25,7 +25,8 @@ std::string switch_it(std:: string it){
 void add_to_it(std::vector<stocks> &st, std::string token){
 
     std::string stock;
-    std::string price;
+    std::string str_price;
+    int price;
     int iter = 0;
     while(token[iter] != ' '){
         stock += token[iter];
@@ -33,14 +34,12 @@ void add_to_it(std::vector<stocks> &st, std::string token){
     }
     iter++;
     while(token[iter]!= ' '){
-        price += token[iter];
+        str_price += token[iter];
         iter++;
     }
-
+    price=stoi(str_price);
     bool found = false;
     int index;
-    int x=0;
-    int y=0;
     for(int i =0; i < st.size(); i++){
         if(st[i].s == stock){
             found = true;
@@ -50,80 +49,58 @@ void add_to_it(std::vector<stocks> &st, std::string token){
     }
 
     if(found){
-        // std::cout<<"print for me"<<st[0].bests_nt<<" "<<st[0].bestb_nt<<std::endl;
+        // std::cout<<"last price/value is "<<st[index].price_l<<"bestb"<<st[index].bestb_nt<<"bests"<<st[index].bests_nt<<std::endl;
         if(token[token.size() - 1] == 's'){
-            if(st[index].bests_nt=="N"){
-                x=1;
-            }
-            else{
-                if(price >= st[index].bests_nt){
+            if(st[index].bests_nt!="N" && price >= stoi(st[index].bests_nt)){
                     std::cout<<"No Trade\n";
                     return;
-                }
-                else{
-                    x=1;
-                }
             }
-            if(st[index].bestb_nt != "N"){
-                if(price == st[index].bestb_nt){
-                    std::cout<<"No Trade\n"; 
-                    st[index].bestb_nt="N";
-                    return ; 
-                }
-                else{
-
-                }
+            else{
+                st[index].bests_nt=str_price;
+                // std::cout<<"yo boizz";
             }
-
+            // std::cout<<"bestb"<<st[index].bestb_nt<<"bests"<<st[index].bests_nt<<std::endl;
+            if(st[index].bests_nt == st[index].bestb_nt){
+                std::cout<<"No Trade\n";
+                st[index].bestb_nt="N";
+                st[index].bests_nt="N";
+                return;
+            }
             if(price < st[index].price_l){
                 std::cout<<switch_it(token)<<"\n";
                 st[index].price_l= price;
+                st[index].bests_nt="N";
             }
             else{
                 std::cout<<"No Trade\n";
-                if(x){
-                st[index].bests_nt=price;}
-                return;
             }
-
         }
         else{
-            if(st[index].bestb_nt== "N"){
-                y=1;
-            }
-            else{
-                if(price <= st[index].bestb_nt){
+            if(st[index].bestb_nt!="N" && price <= stoi(st[index].bestb_nt)){
                     std::cout<<"No Trade\n";
                     return;
-                }
-                else{
-                    y=1;
-                }
-            }
-            if(st[index].bests_nt == "N"){
-
             }
             else{
-                if(price == st[index].bests_nt){
-                    std::cout<<"No Trade\n";
-                    st[index].bests_nt = "N";
-                    return;
-                }
-                else{
-
-                }
+                st[index].bestb_nt=str_price;
             }
-            if(price > st[index].price_l){
-                std::cout<<switch_it(token)<<std::endl;
-                st[index].price_l = price;
+            if(st[index].bestb_nt == st[index].bests_nt){
+                std::cout<<"No Trade\n";
+                st[index].bestb_nt="N";
+                st[index].bests_nt="N";
                 return;
+            }
+            // std::cout<<"price is "<<price<<"value is "<<st[index].price_l<<std::endl;
+            // std::cout<<(price >st[index].price_l);
+            if(price > st[index].price_l){
+                std::cout<<switch_it(token)<<"\n";
+                st[index].price_l= price;
+                st[index].bestb_nt="N";
+                // std::cout<<"yooo"<<std::endl;
             }
             else{
                 std::cout<<"No Trade\n";
-                if(y){
-                st[index].bestb_nt = price;}
-                return;
             }
+
         }
     }
     else{
