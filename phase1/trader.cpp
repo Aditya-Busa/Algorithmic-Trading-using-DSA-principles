@@ -11,6 +11,11 @@ struct  stocks{
     //  TreeNode(int key, TreeNode *leftChild, TreeNode *rightChild, TreeNode *parent) : key(key), left(leftChild), right(rightChild), parent(parent) {
     stocks(std::string s, std:: string bests_nt, std:: string bestb_nt, int price_l) : s(s), bests_nt(bests_nt), bestb_nt(bestb_nt), price_l(price_l){}
 };
+void rectify(std:: string message,int &iter){
+    while(!isalpha(message[iter])){
+        iter++;
+    }
+}
 
 std::string switch_it(std:: string it){
     if(it[it.size() - 1]=='b'){
@@ -140,7 +145,7 @@ int main(int argv, char** argc){
                 temp += message[iter];
                 iter++;
             }
-            iter = iter + 2;
+            rectify(message,iter);
             add_to_it(st_vec,temp);
             temp = "";
         }
