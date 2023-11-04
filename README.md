@@ -17,4 +17,4 @@ Few small notes before starting :
 
     iii. Now at last you compare with Value and if Good then you output, if not then you replace it with Best_buy or Best_sell wherever it belongs to(Note that we arrived here after checking whether it is a better buy or sell, and we came to this step only after verifying that it is a better buy/sell)
 
-__An Example to take care between ii and iii__ : If B 60 s & B 30 b are surviving orders, then if B 30 s comes, then it gets cancelled by B 60 s, not by B 30 b
+__An Example to take care between ii and iii__ : If B 60 b & B 30 s are surviving orders, then if B 30 b comes, then it gets cancelled by B 60 b, not by B 30 s
