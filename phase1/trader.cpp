@@ -6,11 +6,9 @@ struct  stocks{
     std:: string bests_nt;//Non traded best price for sell
     std:: string bestb_nt;//Non traded best price for buy
     int price_l;//last traded price
-    //std:: string price;//present price
-    // char v;
-    //  TreeNode(int key, TreeNode *leftChild, TreeNode *rightChild, TreeNode *parent) : key(key), left(leftChild), right(rightChild), parent(parent) {
     stocks(std::string s, std:: string bests_nt, std:: string bestb_nt, int price_l) : s(s), bests_nt(bests_nt), bestb_nt(bestb_nt), price_l(price_l){}
 };
+
 void rectify(std:: string message,int &iter){
     while(!isalpha(message[iter])){
         iter++;
@@ -28,7 +26,6 @@ std::string switch_it(std:: string it){
 }
 
 void add_to_it(std::vector<stocks> &st, std::string token){
-
     std::string stock;
     std::string str_price;
     int price;
@@ -52,9 +49,7 @@ void add_to_it(std::vector<stocks> &st, std::string token){
             break;
         }
     }
-
     if(found){
-        // std::cout<<"last price/value is "<<st[index].price_l<<"bestb"<<st[index].bestb_nt<<"bests"<<st[index].bests_nt<<std::endl;
         if(token[token.size() - 1] == 's'){
             if(st[index].bests_nt!="N" && price >= stoi(st[index].bests_nt)){
                     std::cout<<"No Trade\n";
@@ -64,7 +59,6 @@ void add_to_it(std::vector<stocks> &st, std::string token){
                 st[index].bests_nt=str_price;
                 // std::cout<<"yo boizz";
             }
-            // std::cout<<"bestb"<<st[index].bestb_nt<<"bests"<<st[index].bests_nt<<std::endl;
             if(st[index].bests_nt == st[index].bestb_nt){
                 std::cout<<"No Trade\n";
                 st[index].bestb_nt="N";
@@ -94,18 +88,14 @@ void add_to_it(std::vector<stocks> &st, std::string token){
                 st[index].bests_nt="N";
                 return;
             }
-            // std::cout<<"price is "<<price<<"value is "<<st[index].price_l<<std::endl;
-            // std::cout<<(price >st[index].price_l);
             if(price > st[index].price_l){
                 std::cout<<switch_it(token)<<"\n";
                 st[index].price_l= price;
                 st[index].bestb_nt="N";
-                // std::cout<<"yooo"<<std::endl;
             }
             else{
                 std::cout<<"No Trade\n";
             }
-
         }
     }
     else{
@@ -117,7 +107,6 @@ void add_to_it(std::vector<stocks> &st, std::string token){
 
 
 int main(int argv, char** argc){
-
     Receiver rcv;
     //sleep(5);
     bool found_dollar = false;
@@ -129,13 +118,9 @@ int main(int argv, char** argc){
             //std::message1 = rcv.readIML();
             found_dollar= true;
         }
- 
     }
-    
-
     rcv.terminate();
-    // std::cout<<message<<std::endl<<std::endl;
-
+    
     if(argc[1][0]=='1'){
         std::vector<stocks> st_vec;
         int iter = 0;
