@@ -24,15 +24,17 @@ __An Example to take care between ii and iii__ : If B 60 b & B 30 s are survivin
 
 Structs to create : 
   1. **Stock** (This should contain "name_stock" and "quantity_stock") 
-  2. **Line** (In this we process a line and store them as "Stock"s), so this should contain a vector of "**Stock**"s and a pair which contains "b" or "s" as pair.second and the price for this pair.first
+  2. **Line** (In this we process a line and store them as "Stock"s), so this should contain a vector of "**Stock**"s and a **pair** which contains "b" or "s" as pair.second and the price for this pair.first,IT SHOULD ALSO CONTAIN A VECTOR WHICH INDICATES WHAT ARE THER LINES USED IN MAKING THIS LINE,THIS WAS NOT TAKEN CARE OF, IN OUR DISCUSSION PREVIOUSLY)
+  3. 
 
-Vectors to create :
-  1. vector<**Line**>**Structures** 
+
+Functions to create :
+  1. add_line_to_line()(this should contain a _"for loop of add_stock_to_line"_,these are two separate functions just for modularity,DONT FORGET TO ADD QUANTITY ALSO)
+  2. add_stock_to_line()
   
 **Algorithm**
   1. The first line arrived , we process it and make it into a **Line**, then we push_back it into Structures
-  2. Now process the second line, we clone the Structures and add it into it again using (_append_), Now we iterate from size/2 to size-1(i.e last element) to add the second line into it(i.e. after cloning we have {first,first} as **Structures**, now we start iterating from n/2 to n-1(i.e. 1 to 1) , Now take **second line** 
-
+  2. Now process the second line, we clone the Structures (i.e. create a **vector<Line>temp_structures=Structures**), Now iterate through **temp_structures**, for every **Line** in **temp_structures**,use **add_line_to_line** to add the current line to existing lines in temp_structures, 
 
 
 
