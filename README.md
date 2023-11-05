@@ -1,6 +1,6 @@
 # Algorithmic-Trading-using-DSA-principles
 
-Details of Implementation for Phase 1 : Part 1
+**Details of Implementation for Phase 1 : Part 1**
 
 Few small notes before starting :
   1. Any order which is TRADED doesn't go into Best_buy or Best_sell
@@ -18,3 +18,32 @@ Few small notes before starting :
     iii. Now at last you compare with Value and if Good then you output, if not then you place it in Best_buy or Best_sell wherever it belongs to(Note that we arrived here after checking whether it is a better buy or sell, and we came to this step only after verifying that it is a better buy/sell)
 
 __An Example to take care between ii and iii__ : If B 60 b & B 30 s are surviving orders, then if B 30 b comes, then it gets cancelled by B 60 b, not by B 30 s
+
+
+**Details of Implementation for Phase 1 : Part 2**
+
+Structs to create : 
+  1. **Stock** (This should contain "name_stock" and "quantity_stock") 
+  2. **Line** (In this we process a line and store them as "Stock"s), so this should contain a vector of "**Stock**"s and a pair which contains "b" or "s" as pair.second and the price for this pair.first
+
+Vectors to create :
+  1. vector<**Line**>**Structures** 
+  
+**Algorithm**
+  1. The first line arrived , we process it and make it into a **Line**, then we push_back it into Structures
+  2. Now process the second line, we clone the Structures and add it into it again using (_append_), Now we iterate from size/2 to size-1(i.e last element) to add the second line into it(i.e. after cloning we have {first,first} as **Structures**, now we start iterating from n/2 to n-1(i.e. 1 to 1) , Now take **second line** 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
