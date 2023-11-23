@@ -163,9 +163,9 @@ void add_to_it(std::vector<stocks> &st, std::string token)
 
 line pre_process(std::string temp)
 {
-    std::cerr<<"I reached here safely"<<std::endl;
+    // std::cerr<<"I reached here safely"<<std::endl;
     int u = temp.length() - 1;
-    std::cerr<<u<<std::endl;
+    // std::cerr<<u<<std::endl;
     int p1, p2;
     std::vector<std::pair<std::string, std::string>> r1; // This will be shares
     std::string r2;                                      // This will be price_b
@@ -178,10 +178,10 @@ line pre_process(std::string temp)
     }
     p2 = u;
     u--;
-    std::cerr<<"I reached here safely"<<std::endl;
-    std::cerr<<"p1 and p2 are "<<p1<<" "<<p2<<std::endl;
+    // std::cerr<<"I reached here safely"<<std::endl;
+    // std::cerr<<"p1 and p2 are "<<p1<<" "<<p2<<std::endl;
     r2 = temp.substr(p2 + 1, p1 - p2);
-    std::cerr<<"price is "<<r2<<std::endl;
+    // std::cerr<<"price is "<<r2<<std::endl;
     std::string t_string;
     std::string t_string1;
     std::pair<std::string, std::string> temp_pair;
@@ -196,9 +196,9 @@ line pre_process(std::string temp)
             }
             p2 = u;
             u--;
-            std::cerr<<"p1 , p2 ,u are "<<p1<<" "<<p2<<" "<<u<<std::endl;
+            // std::cerr<<"p1 , p2 ,u are "<<p1<<" "<<p2<<" "<<u<<std::endl;
             t_string = temp.substr(p2 + 1, p1 - p2);
-            std::cerr<<t_string<<std::endl;
+            // std::cerr<<t_string<<std::endl;
             swi_tch = false;
         }
         else
@@ -216,10 +216,10 @@ line pre_process(std::string temp)
                 p2--;
             } // for accounting the corner case
             u--;
-            std::cerr<<"p1 , p2 ,u are "<<p1<<" "<<p2<<" "<<u<<std::endl;
+            // std::cerr<<"p1 , p2 ,u are "<<p1<<" "<<p2<<" "<<u<<std::endl;
             t_string1 = temp.substr(p2 + 1, p1 - p2);
             temp_pair = std::make_pair(t_string1, t_string);
-            std::cerr<<t_string1<<std::endl;
+            // std::cerr<<t_string1<<std::endl;
             r1.push_back(temp_pair);
             swi_tch = true;
         }
@@ -228,7 +228,7 @@ line pre_process(std::string temp)
     sort(r1.begin(), r1.end(), CompareShare);
     //////////////////////////////////////
     line L(r1, r2);
-    std::cerr<<"I reached here safely"<<std::endl;
+    // std::cerr<<"I reached here safely"<<std::endl;
     return L;
 }
 
@@ -274,7 +274,7 @@ void check_for_arbitrage(std::vector<line> &lines_b)
         std::cout<<"No Trade"<<std::endl;
         return;
     }
-    std::cerr<<"I reached check for 2nd time safely"<<std::endl;
+    // std::cerr<<"I reached check for 2nd time safely"<<std::endl;
     // Total number of subsets is 2^n
     long long int totalSubsets = (1 << n);
 
@@ -284,7 +284,7 @@ void check_for_arbitrage(std::vector<line> &lines_b)
     std::string empty_price_b = "0";
     line now(empty_shares, empty_price_b);
 
-    std::cerr<<"I reached check for 2nd time safely"<<std::endl;
+    // std::cerr<<"I reached check for 2nd time safely"<<std::endl;
     for (int i = 0; i < totalSubsets; ++i)
     {
         // std::cerr<<"I reached check for "<<i<<" time safely"<<std::endl;
@@ -296,19 +296,19 @@ void check_for_arbitrage(std::vector<line> &lines_b)
             }
         }
         add_line_to_line(now,lines_b[n]);
-        std::cerr<<"I reached check for 2nd time safely"<< std::stoi(now.price_b)<<std::endl;
+        // std::cerr<<"I reached check for 2nd time safely"<< std::stoi(now.price_b)<<std::endl;
         if (std::stoi(now.price_b) > 0)
         {
-            int i = 0;
-            std::cerr<<"shares size is "<< (now.shares).size()<<std::endl;
-            for (i = 0; i < (now.shares).size(); i++)
+            bool flag = true;
+            // std::cerr<<"shares size is "<< (now.shares).size()<<std::endl;
+            for (int p = 0; p < (now.shares).size(); p++)
             {
-                if (std::stoi(now.shares[i].second) != 0)
-                    break;
+                if (std::stoi(now.shares[p].second) != 0)
+                    flag = false;
             }
-            std::cerr<<"i is "<< i<<std::endl;
+            // std::cerr<<"p is "<< p<<std::endl;
 
-            if (i == (now.shares).size() && std::stoi(now.price_b) > max_profit)
+            if (flag && std::stoi(now.price_b) > max_profit)
             {
                 max_profit = std::stoi(now.price_b);
                 max_profit_index = i;
@@ -320,14 +320,17 @@ void check_for_arbitrage(std::vector<line> &lines_b)
 
     if(max_profit > 0)
     {
-        std::cout<<switch_it(all_lines[n])<<"#"<<std::endl;
+        std::cout<<switch_it(all_lines[n])<<std::endl;
         all_lines.erase(all_lines.begin()+n);
         lines_b.erase(lines_b.begin()+n);
+        std::cerr<<all_lines.size()<<" "<<n<<std::endl;
+        std::cerr<<max_profit<<std::endl;
+        std::cerr<<max_profit_index<<std::endl;
         for (int j = n-1; j >=0; j--)
         {
             if (max_profit_index & (1 << j))
             {
-                std::cout<<switch_it(all_lines[j])<<"#"<<std::endl;
+                std::cout<<switch_it(all_lines[j])<<std::endl;
                 all_lines.erase(all_lines.begin()+j);
                 lines_b.erase(lines_b.begin()+j);
             }
@@ -385,16 +388,16 @@ int main(int argv, char **argc)
         {
             while (message[iter] != '#')
             {
-                std::cerr<<iter<<std::endl;
+                // std::cerr<<iter<<std::endl;
                 temp += message[iter];
                 iter++;
             }
-            std::cerr<<temp<<std::endl;
+            // std::cerr<<temp<<std::endl;
             rectify(message, iter);
-            std::cerr<<iter<<std::endl;
+            // std::cerr<<iter<<std::endl;
             all_lines.push_back(temp); // Pushed the current line "as it is" in all_lines (for outputting purpose)
             line thisline = pre_process(change_sell_to_buy(temp));
-            std::cerr<<temp<<std::endl;
+            // std::cerr<<temp<<std::endl;
             temp = "";
             lines_b.push_back(thisline);
             check_for_arbitrage(lines_b);
