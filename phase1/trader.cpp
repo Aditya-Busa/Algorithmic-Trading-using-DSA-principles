@@ -1,11 +1,36 @@
 #include "receiver.h"
 #include <vector>
-#include "part2_functions.cpp"
+// #include "part1_functions.cpp"
+// #include "part2_functions.cpp"
+// #include "part3_functions.cpp"
 
-std::vector< std::pair<std::string,int> > all_lines; // The actual lines(for outputting purposes)
+std::vector<std::string> all_lines; // The actual lines(for outputting purposes)
 
-// ALL_LINES[I] NEED NOT BE I OR I+1 TH LINE
-// CHECK ALL_LINES.SECOND
+bool CompareShare(std::pair<std::string, std::string> a, std::pair<std::string, std::string> b) { return a.first < b.first; }
+
+struct line
+{
+    std::vector<std::pair<std::string, std::string>> shares;
+    std::string price_b; // first is price and second is b/s(don't worry, it is going to be b)
+    line(std::vector<std::pair<std::string, std::string>> shares, std::string price_b) : shares(shares), price_b(price_b) {}
+};
+
+std::string change_sell_to_buy(std::string it)
+{
+    if (it[it.size() - 1] == 's')
+    {
+        it[it.size() - 1] = 'b';
+        int iter = it.size() - 3;
+        std::string minus = "-";
+        while (it[iter] != ' ')
+        {
+            iter--;
+        }
+        iter++;
+        it.insert(iter, minus);
+    }
+    return it;
+}
 
 struct stocks
 {
@@ -15,6 +40,7 @@ struct stocks
     int price_l;          // last traded price
     stocks(std::string s, std::string bests_nt, std::string bestb_nt, int price_l) : s(s), bests_nt(bests_nt), bestb_nt(bestb_nt), price_l(price_l) {}
 };
+
 void rectify(std::string message, int &iter)
 {
     while (!isalpha(message[iter]))
@@ -135,48 +161,184 @@ void add_to_it(std::vector<stocks> &st, std::string token)
     }
 }
 
-void check_for_arbitrage(std::vector<line> &Structures_b)
+line pre_process(std::string temp)
 {
-    int for_max_profit_index = -1;
-    int the_max_profit = 0;
-    int j;
-    for (int i = 0; i < Structures_b.size(); i++)
+    std::cerr<<"I reached here safely"<<std::endl;
+    int u = temp.length() - 1;
+    std::cerr<<u<<std::endl;
+    int p1, p2;
+    std::vector<std::pair<std::string, std::string>> r1; // This will be shares
+    std::string r2;                                      // This will be price_b
+    bool swi_tch = true;                                 // modification of count (as in your code)
+    u = u - 2;
+    p1 = u;
+    while (temp[u] != ' ')
     {
-        bool to_continue = true;
-        for (j = 0; j < Structures_b[i].shares.size(); j++)
+        u--;
+    }
+    p2 = u;
+    u--;
+    std::cerr<<"I reached here safely"<<std::endl;
+    std::cerr<<"p1 and p2 are "<<p1<<" "<<p2<<std::endl;
+    r2 = temp.substr(p2 + 1, p1 - p2);
+    std::cerr<<"price is "<<r2<<std::endl;
+    std::string t_string;
+    std::string t_string1;
+    std::pair<std::string, std::string> temp_pair;
+    while (u >= 0)
+    {
+        if (swi_tch)
         {
-            if ((Structures_b[i].shares[j]).second != "0")
+            p1 = u;
+            while (temp[u] != ' ')
             {
-                to_continue = false;
-                break;
+                u--;
             }
+            p2 = u;
+            u--;
+            std::cerr<<"p1 , p2 ,u are "<<p1<<" "<<p2<<" "<<u<<std::endl;
+            t_string = temp.substr(p2 + 1, p1 - p2);
+            std::cerr<<t_string<<std::endl;
+            swi_tch = false;
         }
-        if (to_continue && std::stoi(Structures_b[i].price_b_s.first) > the_max_profit)
+        else
         {
-            the_max_profit = std::stoi(Structures_b[i].price_b_s.first);
-            for_max_profit_index = j;
+            p1 = u;
+            while (temp[u] != ' ')
+            {
+                u--;
+                if (u == 0 || u == -1)
+                    break;
+            }
+            p2 = u;
+            if (p2 == 0)
+            {
+                p2--;
+            } // for accounting the corner case
+            u--;
+            std::cerr<<"p1 , p2 ,u are "<<p1<<" "<<p2<<" "<<u<<std::endl;
+            t_string1 = temp.substr(p2 + 1, p1 - p2);
+            temp_pair = std::make_pair(t_string1, t_string);
+            std::cerr<<t_string1<<std::endl;
+            r1.push_back(temp_pair);
+            swi_tch = true;
         }
     }
-    
-    if (for_max_profit_index != -1) // It means arbitrage is detected with >0 profit
+    // NEW LINE FOR SORTING THE STOCK PAIRS
+    sort(r1.begin(), r1.end(), CompareShare);
+    //////////////////////////////////////
+    line L(r1, r2);
+    std::cerr<<"I reached here safely"<<std::endl;
+    return L;
+}
+
+int find_share(std::string share, std::vector<std::pair<std::string, std::string>> shares)
+{
+    for (int i = 0; i < shares.size(); i++)
     {
-        // for (int i = (Structures_b[j].indices_of_lines_in_input).size()-1 ; i >= 0 ; i--)
-        // {
-        //     ////////////////////////////////////
-        //    std::cout<< switch_it(all_lines[i].first) << std::endl ;  
-        //    //////////////////////////////////////
-        // } SINGLE LOOP PLSS
-
-        std::cout << the_max_profit << std::endl ;
-        for(int i = 0 ; i < Structures_b[j].indices_of_lines_in_input.size() ; i++)
+        if (shares[i].first == share)
         {
-
+            return i;
         }
+    }
+    return -1;
+}
 
+void add_share_to_line(std::pair<std::string, std::string> share, line &that)
+{
+    int i = find_share(share.first, that.shares);
+    if (i == -1)
+    {
+        (that.shares).push_back(share);
+    }
+    else
+    {
+        (that.shares[i]).second = std::to_string(std::stoi((that.shares[i]).second) + std::stoi(share.second));
     }
 }
 
+void add_line_to_line(line &that, line this_one) // we_are_adding_this_one_to_that
+{
+    for (int i = 0; i < (this_one.shares).size(); i++)
+    {
+        add_share_to_line((this_one.shares)[i], that);
+    }
+    that.price_b = std::to_string(std::stoi(this_one.price_b) + std::stoi((that.price_b)));
+}
 
+void check_for_arbitrage(std::vector<line> &lines_b)
+{
+    
+    long long int n = lines_b.size() - 1;
+    if(n == 0){
+        std::cout<<"No Trade"<<std::endl;
+        return;
+    }
+    std::cerr<<"I reached check for 2nd time safely"<<std::endl;
+    // Total number of subsets is 2^n
+    long long int totalSubsets = (1 << n);
+
+    int max_profit_index;
+    int max_profit = 0;
+    std::vector<std::pair<std::string, std::string>> empty_shares;
+    std::string empty_price_b = "0";
+    line now(empty_shares, empty_price_b);
+
+    std::cerr<<"I reached check for 2nd time safely"<<std::endl;
+    for (int i = 0; i < totalSubsets; ++i)
+    {
+        // std::cerr<<"I reached check for "<<i<<" time safely"<<std::endl;
+        for (int j = 0; j < n; ++j)
+        {
+            if (i & (1 << j))
+            {
+                add_line_to_line(now,lines_b[j]);
+            }
+        }
+        add_line_to_line(now,lines_b[n]);
+        std::cerr<<"I reached check for 2nd time safely"<< std::stoi(now.price_b)<<std::endl;
+        if (std::stoi(now.price_b) > 0)
+        {
+            int i = 0;
+            std::cerr<<"shares size is "<< (now.shares).size()<<std::endl;
+            for (i = 0; i < (now.shares).size(); i++)
+            {
+                if (std::stoi(now.shares[i].second) != 0)
+                    break;
+            }
+            std::cerr<<"i is "<< i<<std::endl;
+
+            if (i == (now.shares).size() && std::stoi(now.price_b) > max_profit)
+            {
+                max_profit = std::stoi(now.price_b);
+                max_profit_index = i;
+            }
+        }
+        (now.shares).clear();
+        now.price_b = "0";
+    }
+
+    if(max_profit > 0)
+    {
+        std::cout<<switch_it(all_lines[n])<<"#"<<std::endl;
+        all_lines.erase(all_lines.begin()+n);
+        lines_b.erase(lines_b.begin()+n);
+        for (int j = n-1; j >=0; j--)
+        {
+            if (max_profit_index & (1 << j))
+            {
+                std::cout<<switch_it(all_lines[j])<<"#"<<std::endl;
+                all_lines.erase(all_lines.begin()+j);
+                lines_b.erase(lines_b.begin()+j);
+            }
+        }
+        std::cout<<max_profit<<std::endl;
+    }
+    else
+    {
+        std::cout<<"No Trade"<<std::endl;
+    }
+}
 
 int main(int argv, char **argc)
 {
@@ -215,23 +377,27 @@ int main(int argv, char **argc)
     }
     else if (argc[1][0] == '2')
     {
-        std::vector<line> Structures_b;     // All lines are going to be stored in the form of buys
+        std::vector<line> lines_b; // All lines are going to be stored in the form of buys
 
         int iter = 0;
-        int index_of_line = 0;
         std::string temp = "";
         while (iter < message.length())
         {
             while (message[iter] != '#')
             {
+                std::cerr<<iter<<std::endl;
                 temp += message[iter];
                 iter++;
             }
+            std::cerr<<temp<<std::endl;
             rectify(message, iter);
+            std::cerr<<iter<<std::endl;
+            all_lines.push_back(temp); // Pushed the current line "as it is" in all_lines (for outputting purpose)
+            line thisline = pre_process(change_sell_to_buy(temp));
+            std::cerr<<temp<<std::endl;
             temp = "";
-            all_lines.push_back(std::make_pair(temp,index_of_line)); //Pushed the current line as it is in all_lines (for outputting purpose)
-            line thisline = pre_process(change_sell_to_buy(temp), index_of_line);
-            index_of_line++;
+            lines_b.push_back(thisline);
+            check_for_arbitrage(lines_b);
         }
     }
     else if (argc[1][0] == '3')
@@ -239,4 +405,3 @@ int main(int argv, char **argc)
         std::cout << "NO";
     }
 }
-
