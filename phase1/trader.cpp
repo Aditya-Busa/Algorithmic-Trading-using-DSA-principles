@@ -429,7 +429,7 @@ int find_share(std::string share, std::vector<std::pair<std::string, std::string
     return -1;
 }
 
-void add_share_to_line(std::pair<std::string, std::string> share, line &that)
+void add_share_to_line(std::pair<std::string, std::string> &share, line &that)
 {
     int i = find_share(share.first, that.shares);
     if (i == -1)
@@ -442,7 +442,7 @@ void add_share_to_line(std::pair<std::string, std::string> share, line &that)
     }
 }
 
-void add_line_to_line(line &that, line this_one) // we_are_adding_this_one_to_that
+void add_line_to_line(line &that, line &this_one) // we_are_adding_this_one_to_that
 {
     for (int i = 0; i < (this_one.shares).size(); i++)
     {
@@ -451,7 +451,7 @@ void add_line_to_line(line &that, line this_one) // we_are_adding_this_one_to_th
     that.price_b = std::to_string(std::stoi(this_one.price_b) + std::stoi((that.price_b)));
 }
 
-void part3_add_share_to_line(std::pair<std::string, std::string> share, line &that, int j)
+void part3_add_share_to_line(std::pair<std::string, std::string> &share, line &that, int j)
 {
     int i = find_share(share.first, that.shares);
     if (i == -1)
@@ -465,7 +465,7 @@ void part3_add_share_to_line(std::pair<std::string, std::string> share, line &th
     }
 }
 
-void part3_add_line_line(line &that, line this_one, int j)
+void part3_add_line_line(line &that, line &this_one, int j)
 {
     if (j == 0)
         return;
@@ -476,54 +476,73 @@ void part3_add_line_line(line &that, line this_one, int j)
     that.price_b = std::to_string(std::stoi(that.price_b) + (j * std::stoi((this_one.price_b))));
 }
 
-void generatetuple()
+std::vector<bool> part2_get_n(long long int nth_call, int n)
 {
+    std::vector<bool> currentTuple(n, false);
+    for (int i = n - 1; i >= 0; i--)
+    {
+        currentTuple[n - 1 - i] = nth_call % 2;
+        nth_call = nth_call / 2;
+    }
+    return currentTuple;
 }
 
-void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool>& are_it_is)
+void generatetuple(int &index, int &n, line &now, int &max_profit, int &max_profit_index, std::vector<line> &modified_lines_b, long long int &nth_call)
 {
-
-    int n = modified_lines_b.size() - 1;
-    if (n == 0)
+    if (index == n)
     {
-        std::cout << "No Trade" << std::endl;
-        return;
-    }
-    long long int totalSubsets = (1 << n);
 
-    int max_profit_index;
-    int max_profit = 0;
-    std::vector<std::pair<std::string, std::string>> empty_shares;
-    std::string empty_price_b = "0";
-    line now(empty_shares, empty_price_b);
-    for (int i = 0; i < totalSubsets; ++i)
-    {
-        for (int j = 0; j < n; ++j)
+        if (nth_call == 0)
         {
-            if (i & (1 << j))
-            {
-                add_line_to_line(now, modified_lines_b[j]);
-            }
+            nth_call++;
+            return;
         }
+        nth_call++;
         add_line_to_line(now, modified_lines_b[n]);
         if (std::stoi(now.price_b) > 0)
         {
             bool flag = true;
             for (int p = 0; p < (now.shares).size(); p++)
             {
-                if (std::stoi(now.shares[p].second) != 0)
+                if (std::stoi((now.shares[p]).second) != 0)
                     flag = false;
             }
 
             if (flag && std::stoi(now.price_b) > max_profit)
             {
                 max_profit = std::stoi(now.price_b);
-                max_profit_index = i;
+                max_profit_index = nth_call - 1;
             }
         }
-        (now.shares).clear();
-        now.price_b = "0";
+        part3_add_line_line(now, modified_lines_b[n], -1);
+        return;
     }
+    index++;
+    generatetuple(index, n, now, max_profit, max_profit_index, modified_lines_b, nth_call);
+    index--;
+    add_line_to_line(now, modified_lines_b[index]);
+    index++;
+    generatetuple(index, n, now, max_profit, max_profit_index, modified_lines_b, nth_call);
+    index--;
+    part3_add_line_line(now, modified_lines_b[index], -1);
+}
+
+void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool> &are_it_is)
+{
+    int n = modified_lines_b.size() - 1;
+    if (n == 0 || n == -1)
+    {
+        std::cout << "No Trade" << std::endl;
+        return;
+    }
+    int max_profit_index = -1;
+    int max_profit = 0;
+    std::vector<std::pair<std::string, std::string>> empty_shares;
+    std::string empty_price_b = "0";
+    line now(empty_shares, empty_price_b);
+    long long int nth_call = 0;
+    int index = 0;
+    generatetuple(index, n, now, max_profit, max_profit_index, modified_lines_b, nth_call);
 
     if (max_profit > 0)
     {
@@ -532,9 +551,10 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
         modified_lines_b.erase(modified_lines_b.begin() + n);
         actual_lines_b.erase(actual_lines_b.begin() + n);
         are_it_is.erase(are_it_is.begin() + n);
+        std::vector<bool> currenttuple = part2_get_n(max_profit_index, n);
         for (int j = n - 1; j >= 0; j--)
         {
-            if (max_profit_index & (1 << j))
+            if (currenttuple[n - 1 - j])
             {
                 std::cout << switch_it(all_lines[j]) << std::endl;
                 all_lines.erase(all_lines.begin() + j);
@@ -551,7 +571,7 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
     }
 }
 
-void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_tuple, int index, std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, line &now, int &max_profit, int &max_profit_index, int &nth_call)
+void part3_generateTuples(std::vector<std::string> &sets, int &index, std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, line &now, int &max_profit, int &max_profit_index, long long int &nth_call)
 {
     // See how to remove last element zero case
     if (index == sets.size())
@@ -582,7 +602,9 @@ void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_t
     for (int i = 0; i <= std::stoi(sets[index]); i++)
     {
         part3_add_line_line(now, modified_lines_b[index], i);
-        part3_generateTuples(sets, my_tuple, index + 1, modified_lines_b, actual_lines_b, now, max_profit, max_profit_index, nth_call);
+        index++;
+        part3_generateTuples(sets, index, modified_lines_b, actual_lines_b, now, max_profit, max_profit_index, nth_call);
+        index--;
         part3_add_line_line(now, modified_lines_b[index], -i);
     }
 }
@@ -598,7 +620,7 @@ std::vector<int> get_n(int nth_call)
     return currentTuple;
 }
 
-void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool>& are_it_is)
+void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool> &are_it_is)
 {
     int n = modified_lines_b.size() - 1;
     if (n == 0)
@@ -612,9 +634,9 @@ void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<
     std::string empty_price_b = "0";
     line now(empty_shares, empty_price_b);
 
-    int nth_call = 0;
-    std::vector<int> my_tuple(quantities.size(), 0);
-    part3_generateTuples(quantities, my_tuple, 0, modified_lines_b, actual_lines_b, now, max_profit, max_profit_index, nth_call);
+    long long int nth_call = 0;
+    int index = 0;
+    part3_generateTuples(quantities, index, modified_lines_b, actual_lines_b, now, max_profit, max_profit_index, nth_call);
 
     if (max_profit > 0)
     {
@@ -690,6 +712,7 @@ void check_for_cancellation(std::vector<line> &actual_lines_b, std::vector<bool>
                 actual_lines_b.erase(actual_lines_b.begin() + first);
                 modified_lines_b.erase(modified_lines_b.begin() + first);
                 are_it_s.erase(are_it_s.begin() + first);
+
                 return;
             }
         }
@@ -760,7 +783,7 @@ void check_for_cancellation(std::vector<line> &actual_lines_b, std::vector<bool>
     }
 }
 
-void part3_check_for_cancellation(std::vector<line> &actual_lines_b, std::vector<bool> &are_it_s, std::vector<line> &modified_lines_b)
+void part3_check_for_cancellation(std::vector<line> &actual_lines_b, std::vector<bool> &are_it_s, std::vector<line> &modified_lines_b, bool &check_arb)
 {
     int n = actual_lines_b.size() - 1;
     int first = 0;
@@ -794,6 +817,7 @@ void part3_check_for_cancellation(std::vector<line> &actual_lines_b, std::vector
         {
             if (std::stoi(quantities[n]) == std::stoi(quantities[first]))
             {
+                check_arb = false;
                 all_lines.erase(all_lines.begin() + n);
                 actual_lines_b.erase(actual_lines_b.begin() + n);
                 modified_lines_b.erase(modified_lines_b.begin() + n);
@@ -818,6 +842,7 @@ void part3_check_for_cancellation(std::vector<line> &actual_lines_b, std::vector
             }
             else
             {
+                check_arb = false;
                 quantities[first] = std::to_string(std::stoi(quantities[first]) - std::stoi(quantities[n]));
                 all_lines.erase(all_lines.begin() + n);
                 actual_lines_b.erase(actual_lines_b.begin() + n);
@@ -891,9 +916,22 @@ int main(int argv, char **argc)
             actual_lines_b.push_back(hi.second);
             are_it_s.push_back(is_it_s);
             temp = "";
-
-            check_for_cancellation(actual_lines_b, are_it_s, modified_lines_b);
-            check_for_arbitrage(modified_lines_b, actual_lines_b, total_profit, are_it_s);
+            if (modified_lines_b.size() == 1 || modified_lines_b.size() == 0)
+            {
+                std::cout << "No Trade" << std::endl;
+            }
+            else
+            {
+                check_for_cancellation(actual_lines_b, are_it_s, modified_lines_b);
+                if (modified_lines_b.size() == 1 || modified_lines_b.size() == 0)
+                {
+                    std::cout << "No Trade" << std::endl;
+                }
+                else
+                {
+                    check_for_arbitrage(modified_lines_b, actual_lines_b, total_profit, are_it_s);
+                }
+            }
         }
         std::cout << total_profit;
     }
@@ -925,8 +963,31 @@ int main(int argv, char **argc)
             actual_lines_b.push_back(hi.second);
             are_it_s.push_back(is_it_s);
             temp = "";
-            part3_check_for_cancellation(actual_lines_b, are_it_s, modified_lines_b);
-            part3_check_for_arbitrage(modified_lines_b, actual_lines_b, total_profit, are_it_s);
+            bool check_arb = true;
+
+            if (modified_lines_b.size() == 1 || modified_lines_b.size() == 0)
+            {
+                std::cout << "No Trade" << std::endl;
+            }
+            else
+            {
+                part3_check_for_cancellation(actual_lines_b, are_it_s, modified_lines_b, check_arb);
+                if (modified_lines_b.size() == 1 || modified_lines_b.size() == 0)
+                {
+                    std::cout << "No Trade" << std::endl;
+                }
+                else
+                {
+                    if (check_arb)
+                    {
+                        part3_check_for_arbitrage(modified_lines_b, actual_lines_b, total_profit, are_it_s);
+                    }
+                    else
+                    {
+                        std::cout << "No Trade" << std::endl;
+                    }
+                }
+            }
         }
         std::cout << total_profit;
     }
