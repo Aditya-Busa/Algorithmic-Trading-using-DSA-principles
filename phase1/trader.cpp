@@ -398,26 +398,34 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
 
 int find_share(std::string share, std::vector<std::pair<std::string, std::string>> shares)
 {
-    int l = 0;
-    int r = shares.size() - 1;
-    int m = r/2;
-    while (l <= r)
-    {
-        m = l + (r - l) / 2;
+    // int l = 0;
+    // int r = shares.size() - 1;
+    // int m = r/2;
+    // while (l <= r)
+    // {
+    //     m = l + (r - l) / 2;
 
-        if (shares[m].first == share)
+    //     if (shares[m].first == share)
+    //     {
+    //         return m;
+    //     }
+    //     else if (shares[m].first < share)
+    //     {
+    //         l = m + 1;
+    //     }
+    //     else
+    //     {
+    //         r = m - 1;
+    //     }
+    // }
+    for (int i = 0; i < shares.size(); i++)
+    {
+        if (shares[i].first == share)
         {
-            return m;
-        }
-        else if (shares[m].first < share)
-        {
-            l = m + 1;
-        }
-        else
-        {
-            r = m - 1;
+            return i;
         }
     }
+    return -1;
     return -1;
 }
 
@@ -543,7 +551,7 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
     }
 }
 
-void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_tuple, int index, std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, line now, int &max_profit, int &max_profit_index, int &nth_call)
+void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_tuple, int index, std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, line &now, int &max_profit, int &max_profit_index, int &nth_call)
 {
     // See how to remove last element zero case
     if (index == sets.size())
@@ -554,10 +562,6 @@ void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_t
             return;
         }
         nth_call++;
-        for (int i = 0; i < my_tuple.size(); i++)
-        {
-            part3_add_line_line(now, modified_lines_b[i], my_tuple[i]);
-        }
         if (std::stoi(now.price_b) > 0)
         {
             bool flag = true;
@@ -573,14 +577,13 @@ void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_t
                 max_profit_index = nth_call - 1;
             }
         }
-        now.price_b = "0";
-        now.shares.clear();
         return;
     }
     for (int i = 0; i <= std::stoi(sets[index]); i++)
     {
-        my_tuple[index] = i;
+        part3_add_line_line(now, modified_lines_b[index], i);
         part3_generateTuples(sets, my_tuple, index + 1, modified_lines_b, actual_lines_b, now, max_profit, max_profit_index, nth_call);
+        part3_add_line_line(now, modified_lines_b[index], -i);
     }
 }
 
