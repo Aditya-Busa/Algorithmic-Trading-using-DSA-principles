@@ -480,7 +480,7 @@ void generatetuple()
 {
 }
 
-void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool> are_it_is)
+void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool>& are_it_is)
 {
 
     int n = modified_lines_b.size() - 1;
@@ -598,7 +598,7 @@ std::vector<int> get_n(int nth_call)
     return currentTuple;
 }
 
-void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool> are_it_is)
+void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool>& are_it_is)
 {
     int n = modified_lines_b.size() - 1;
     if (n == 0)
