@@ -1,12 +1,6 @@
 #include "receiver.h"
 #include <vector>
-// #include "part1_functions.cpp"
-// #include "part2_functions.cpp"
-// #include "part3_functions.cpp"
 
-// IMPLEMENT BINARY SEARCH FOR CHECKING FOR SHARE AS IT IS ALREADY SORTED
-
-// int nth_call = 0;
 std::vector<std::string> all_lines; // The actual lines(for outputting purposes)
 std::vector<std::string> quantities;
 bool CompareShare(std::pair<std::string, std::string> a, std::pair<std::string, std::string> b) { return a.first < b.first; }
@@ -224,9 +218,7 @@ void add_to_it(std::vector<stocks> &st, std::string token)
 
 std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
 {
-    // std::cerr << "I reached here safely" << std::endl;
     int u = temp.length() - 1;
-    // std::cerr << u << std::endl;
     int p1, p2;
     std::vector<std::pair<std::string, std::string>> r1;     // This will be shares
     std::vector<std::pair<std::string, std::string>> act_r1; // This will be shares
@@ -241,8 +233,6 @@ std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
     }
     p2 = u;
     u--;
-    // std::cerr << "I reached here safely" << std::endl;
-    // std::cerr << "p1 and p2 are " << p1 << " " << p2 << std::endl;
     r2 = temp.substr(p2 + 1, p1 - p2);
     act_r2 = r2;
     if (is_it_s)
@@ -256,10 +246,6 @@ std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
             act_r2.insert(0, "-");
         }
     }
-
-    // std::cerr << "modified price is " << r2 << std::endl;
-    // std::cerr << "actual price is " << act_r2 << std::endl;
-
     std::string t_string;
     std::string t_string1;
     std::pair<std::string, std::string> temp_pair;
@@ -276,7 +262,6 @@ std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
             }
             p2 = u;
             u--;
-            // std::cerr << "p1 , p2 ,u are " << p1 << " " << p2 << " " << u << std::endl;
             t_string = temp.substr(p2 + 1, p1 - p2);
             act_t_string = t_string;
             if (is_it_s)
@@ -290,7 +275,6 @@ std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
                     t_string.insert(0, "-");
                 }
             }
-            // std::cerr << t_string << std::endl;
             swi_tch = false;
         }
         else
@@ -308,11 +292,9 @@ std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
                 p2--;
             } // for accounting the corner case
             u--;
-            // std::cerr << "p1 , p2 ,u are " << p1 << " " << p2 << " " << u << std::endl;
             t_string1 = temp.substr(p2 + 1, p1 - p2);
             temp_pair = std::make_pair(t_string1, t_string);
             act_temp_pair = std::make_pair(t_string1, act_t_string);
-            // std::cerr << t_string1 << std::endl;
             r1.push_back(temp_pair);
             act_r1.push_back(act_temp_pair);
             swi_tch = true;
@@ -321,31 +303,14 @@ std::pair<line, line> pre_process(std::string temp, bool &is_it_s)
     // NEW LINE FOR SORTING THE STOCK PAIRS
     sort(r1.begin(), r1.end(), CompareShare);
     sort(act_r1.begin(), act_r1.end(), CompareShare);
-    // std::cerr << "the following is modified_lines_b's shares ";
-    // for (int i = 0; i < r1.size(); i++)
-    // {
-    //     std::cerr << r1[i].first << " " << r1[i].second << " ";
-    // }
-    // std::cerr << std::endl;
-    // std::cerr << "the following is actual_lines_b's shares ";
-    // for (int i = 0; i < r1.size(); i++)
-    // {
-    //     std::cerr << act_r1[i].first << " " << act_r1[i].second << " ";
-    // }
-    // std::cerr << std::endl;
-    // std::cerr << "the modified price is ";
-    //////////////////////////////////////
     line L1(r1, r2);
     line L2(act_r1, r2);
-    // std::cerr << "I reached here safely" << std::endl;
     return std::make_pair(L1, L2);
 }
 
 std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
 {
-    // std::cerr << "I reached part3_preprocess line 352 safely" << std::endl;
     int u = temp.length() - 1;
-    // std::cerr << "u is "<<u << std::endl;
     int p1, p2;
     std::vector<std::pair<std::string, std::string>> r1;     // This will be shares
     std::vector<std::pair<std::string, std::string>> act_r1; // This will be shares
@@ -360,8 +325,6 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
     }
     p2 = u;
     u--;
-    // std::cerr << "I reached here safely" << std::endl;
-    // std::cerr << "p1 and p2 are " << p1 << " " << p2 << std::endl;
     quantities.push_back(temp.substr(p2 + 1, p1 - p2));
     p1 = u;
     while (temp[u] != ' ')
@@ -371,9 +334,6 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
     p2 = u;
     u--;
     r2 = temp.substr(p2 + 1, p1 - p2);
-    // std::cerr << "modified price is " << r2 << std::endl;
-    // std::cerr << "actual price is " << act_r2 << std::endl;
-
     std::string t_string;
     std::string t_string1;
     std::pair<std::string, std::string> temp_pair;
@@ -390,7 +350,6 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
             }
             p2 = u;
             u--;
-            // std::cerr << "p1 , p2 ,u are " << p1 << " " << p2 << " " << u << std::endl;
             t_string = temp.substr(p2 + 1, p1 - p2);
             act_t_string = t_string;
             if (is_it_s)
@@ -404,7 +363,6 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
                     t_string.insert(0, "-");
                 }
             }
-            // std::cerr << t_string << std::endl;
             swi_tch = false;
         }
         else
@@ -422,11 +380,9 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
                 p2--;
             } // for accounting the corner case
             u--;
-            // std::cerr << "p1 , p2 ,u are " << p1 << " " << p2 << " " << u << std::endl;
             t_string1 = temp.substr(p2 + 1, p1 - p2);
             temp_pair = std::make_pair(t_string1, t_string);
             act_temp_pair = std::make_pair(t_string1, act_t_string);
-            // std::cerr << t_string1 << std::endl;
             r1.push_back(temp_pair);
             act_r1.push_back(act_temp_pair);
             swi_tch = true;
@@ -437,17 +393,29 @@ std::pair<line, line> part3_pre_process(std::string temp, bool &is_it_s)
     sort(act_r1.begin(), act_r1.end(), CompareShare);
     line L1(r1, r2);
     line L2(act_r1, r2);
-    // std::cerr << "I reached here safely" << std::endl;
     return std::make_pair(L1, L2);
 }
 
 int find_share(std::string share, std::vector<std::pair<std::string, std::string>> shares)
 {
-    for (int i = 0; i < shares.size(); i++)
+    int l = 0;
+    int r = shares.size() - 1;
+    int m = r/2;
+    while (l <= r)
     {
-        if (shares[i].first == share)
+        m = l + (r - l) / 2;
+
+        if (shares[m].first == share)
         {
-            return i;
+            return m;
+        }
+        else if (shares[m].first < share)
+        {
+            l = m + 1;
+        }
+        else
+        {
+            r = m - 1;
         }
     }
     return -1;
@@ -485,7 +453,6 @@ void part3_add_share_to_line(std::pair<std::string, std::string> share, line &th
     }
     else
     {
-        // std::cerr<<"checking if that.share[i] and share.first are same "<<share.first<<" "<<(that.shares[i]).first<<std::endl;
         (that.shares[i]).second = std::to_string(std::stoi((that.shares[i]).second) + ((std::stoi(share.second)) * (j)));
     }
 }
@@ -494,12 +461,15 @@ void part3_add_line_line(line &that, line this_one, int j)
 {
     if (j == 0)
         return;
-    // std::cerr<<"j is "<<j<<std::endl;
     for (int i = 0; i < (this_one.shares).size(); i++)
     {
         part3_add_share_to_line((this_one.shares)[i], that, j);
     }
     that.price_b = std::to_string(std::stoi(that.price_b) + (j * std::stoi((this_one.price_b))));
+}
+
+void generatetuple()
+{
 }
 
 void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool> are_it_is)
@@ -511,8 +481,6 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
         std::cout << "No Trade" << std::endl;
         return;
     }
-    // std::cerr << "I reached check for 2nd time safely" << std::endl;
-    // Total number of subsets is 2^n
     long long int totalSubsets = (1 << n);
 
     int max_profit_index;
@@ -520,11 +488,8 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
     std::vector<std::pair<std::string, std::string>> empty_shares;
     std::string empty_price_b = "0";
     line now(empty_shares, empty_price_b);
-
-    // std::cerr << "I reached check for 2nd time safely" << std::endl;
     for (int i = 0; i < totalSubsets; ++i)
     {
-        // std::cerr << "I reached check for " << i << " time safely" << std::endl;
         for (int j = 0; j < n; ++j)
         {
             if (i & (1 << j))
@@ -532,13 +497,10 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
                 add_line_to_line(now, modified_lines_b[j]);
             }
         }
-        // Z -1 Y 1 0 s#
         add_line_to_line(now, modified_lines_b[n]);
-        // std::cerr << "I reached check for 2nd time safely" << std::stoi(now.price_b) << std::endl;
         if (std::stoi(now.price_b) > 0)
         {
             bool flag = true;
-            // std::cerr << "shares size is " << (now.shares).size() << std::endl;
             for (int p = 0; p < (now.shares).size(); p++)
             {
                 if (std::stoi(now.shares[p].second) != 0)
@@ -562,10 +524,6 @@ void check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> 
         modified_lines_b.erase(modified_lines_b.begin() + n);
         actual_lines_b.erase(actual_lines_b.begin() + n);
         are_it_is.erase(are_it_is.begin() + n);
-
-        // std::cerr << all_lines.size() << " " << n << std::endl;
-        // std::cerr << max_profit << std::endl;
-        // std::cerr << max_profit_index << std::endl;
         for (int j = n - 1; j >= 0; j--)
         {
             if (max_profit_index & (1 << j))
@@ -590,32 +548,24 @@ void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_t
     // See how to remove last element zero case
     if (index == sets.size())
     {
-        // std::cerr << "NTH CALL is " << nth_call << std::endl;
         if (nth_call == 0)
         {
             nth_call++;
             return;
         }
         nth_call++;
-        // std::cerr << "printing my_tuple ";
         for (int i = 0; i < my_tuple.size(); i++)
         {
-            // std::cerr << my_tuple[i] << " ";
             part3_add_line_line(now, modified_lines_b[i], my_tuple[i]);
         }
-        // std::cerr << std::endl;
         if (std::stoi(now.price_b) > 0)
         {
             bool flag = true;
-            // std::cerr << "shares size is " << (now.shares).size() << std::endl;
-            // std::cerr << "printing price_b " << now.price_b << " and now ";
             for (int p = 0; p < (now.shares).size(); p++)
             {
-                // std::cerr << now.shares[p].first << " " << now.shares[p].second << " ";
                 if (std::stoi((now.shares[p]).second) != 0)
                     flag = false;
             }
-            // std::cerr << "flag is " << flag << std::endl;
 
             if (flag && std::stoi(now.price_b) > max_profit)
             {
@@ -636,30 +586,23 @@ void part3_generateTuples(std::vector<std::string> &sets, std::vector<int> &my_t
 
 std::vector<int> get_n(int nth_call)
 {
-    // std::cerr << "INITIATED GET_N " << std::endl;
     std::vector<int> currentTuple;
     for (int i = quantities.size() - 1; i >= 0; i--)
     {
-        // std::cerr<<"the current quantity is "<<quantities[i]<<std::endl;
         currentTuple.push_back(nth_call % (std::stoi(quantities[i]) + 1));
         nth_call = nth_call / (std::stoi(quantities[i]) + 1);
     }
-    // reverse(currentTuple.begin(),currentTuple.end());
     return currentTuple;
 }
 
 void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<line> &actual_lines_b, int &total_profit, std::vector<bool> are_it_is)
 {
     int n = modified_lines_b.size() - 1;
-    // std::cerr << "n is " << n << std::endl;
     if (n == 0)
     {
         std::cout << "No Trade" << std::endl;
         return;
     }
-    // std::cerr << "I reached check for 2nd time safely" << std::endl;
-    // Total number of subsets is 2^n
-
     int max_profit_index = -1;
     int max_profit = 0;
     std::vector<std::pair<std::string, std::string>> empty_shares;
@@ -667,86 +610,29 @@ void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<
     line now(empty_shares, empty_price_b);
 
     int nth_call = 0;
-
-    // std::cerr << "Printing quantities ";
-    // for (int i = 0; i < quantities.size(); i++)
-    // {
-    //     std::cerr << quantities[i] << " ";
-    // }
-    // std::cerr << std::endl;
-
-//     std::cerr << "Printing modified_lines_b and quantities " << std::endl;
-//     for (int i = 0; i < modified_lines_b.size(); i++)
-//     {
-//         std::cerr << "the shares are ";
-//         for (int j = 0; j < (modified_lines_b[i].shares).size(); j++)
-//         {
-//             std::cerr << (modified_lines_b[i].shares)[j].first << " " << (modified_lines_b[i].shares)[j].second << " ";
-//         }
-//         std::cerr << "the price is " << modified_lines_b[i].price_b << " quantity is " << quantities[i] << std::endl;
-//     }
-
-//     std::cerr << "all_lines " << std::endl;
-//     for (int i = 0; i < all_lines.size(); i++)
-//     {
-//         std::cerr << all_lines[i] << std::endl;
-//     }
-
-    // std::cerr << "Printing actual_lines_b " << std::endl;
-    // for (int i = 0; i < actual_lines_b.size(); i++)
-    // {
-    //     std::cerr << "the shares are ";
-    //     for (int j = 0; j < (actual_lines_b[i].shares).size(); j++)
-    //     {
-    //         std::cerr << (actual_lines_b[i].shares)[j].first << " " << (actual_lines_b[i].shares)[j].second << " ";
-    //     }
-    //     std::cerr << "the price is " << actual_lines_b[i].price_b << std::endl;
-    // }
-    // std::cerr<<std::endl;
-
-    // std::cerr << "Printing all_lines " << std::endl;
-    // for (int i = 0; i < all_lines.size(); i++)
-    // {
-    //     std::cerr << all_lines[i] << std::endl;
-    // }
-    // std::cerr << std::endl;
     std::vector<int> my_tuple(quantities.size(), 0);
     part3_generateTuples(quantities, my_tuple, 0, modified_lines_b, actual_lines_b, now, max_profit, max_profit_index, nth_call);
 
     if (max_profit > 0)
     {
-        // std::cerr << "I reached check for 2nd time safely and max_profit_index is " << max_profit_index << std::endl;
         std::vector<int> currenttuple = get_n(max_profit_index);
-
-        // std::cerr << "Printing currenttuple "<<currenttuple.size()<<" ";
-        // for (int i = 0; i < currenttuple.size(); i++)
-        // {
-        //     std::cerr << currenttuple[i] << " ";
-        // }
-        // std::cerr << std::endl;
-        // std::cerr << "printing quantities "<<quantities.size();
         for (int i = quantities.size() - 1; i >= 0; i--)
         {
-            // std::cerr << quantities[i] << " ";
-            quantities[i] = std::to_string(std::stoi(quantities[i]) - currenttuple[quantities.size()-1-i]);
+            quantities[i] = std::to_string(std::stoi(quantities[i]) - currenttuple[quantities.size() - 1 - i]);
         }
-        // std::cerr << std::endl;
 
         for (int i = currenttuple.size() - 1; i >= 0; i--)
         {
-            
-            // std::cerr << "the value of quantity of " << i << "th line is " << quantities[i]<<" "<<currenttuple[currenttuple.size()-1-i] << std::endl;
-            if (currenttuple[currenttuple.size()-1-i] != 0)
+
+            if (currenttuple[currenttuple.size() - 1 - i] != 0)
             {
                 std::cout << part3_switch_it(all_lines[i], i, currenttuple) << std::endl;
-                // std::cerr << part3_switch_it(all_lines[i], i, currenttuple) << std::endl;
             }
             if (quantities[i] == "0")
             {
                 modified_lines_b.erase(modified_lines_b.begin() + i);
                 actual_lines_b.erase(actual_lines_b.begin() + i);
                 are_it_is.erase(are_it_is.begin() + i);
-                // std::cerr << "line " << i << " is erased" << std::endl;
                 all_lines.erase(all_lines.begin() + i);
                 quantities.erase(quantities.begin() + i);
             }
@@ -758,8 +644,6 @@ void part3_check_for_arbitrage(std::vector<line> &modified_lines_b, std::vector<
         std::cout << "No Trade" << std::endl;
     }
 }
-
-// actual_lines_b[n].price_b == actual_lines_b[i].price_b
 
 void check_for_cancellation(std::vector<line> &actual_lines_b, std::vector<bool> &are_it_s, std::vector<line> &modified_lines_b)
 {
@@ -781,7 +665,6 @@ void check_for_cancellation(std::vector<line> &actual_lines_b, std::vector<bool>
             }
         }
     }
-    // std::cerr << "first is " << first << "second is " << second << std::endl;
     if (first == -1 && second == -1)
     {
         return;
@@ -888,7 +771,6 @@ void part3_check_for_cancellation(std::vector<line> &actual_lines_b, std::vector
             }
         }
     }
-    // std::cerr << "first is " << first << "second is " << second << std::endl;x
     if (first == n)
     {
         return;
@@ -948,7 +830,6 @@ void part3_check_for_cancellation(std::vector<line> &actual_lines_b, std::vector
 int main(int argv, char **argc)
 {
     Receiver rcv;
-    // sleep(5);
     bool found_dollar = false;
     std::string message = rcv.readIML();
     while (!found_dollar)
@@ -957,7 +838,6 @@ int main(int argv, char **argc)
         message.append(message1);
         if (message.find('$') != std::string::npos)
         {
-            // std::message1 = rcv.readIML();
             found_dollar = true;
         }
     }
@@ -965,12 +845,6 @@ int main(int argv, char **argc)
 
     if (argc[1][0] == '1')
     {
-        // for (int i = 0; i < message.size(); i++)
-        // {
-        //     std::cout << message[i];
-        // }
-
-        // return 0;
         std::vector<stocks> st_vec;
         int iter = 0;
         std::string temp = "";
@@ -998,13 +872,10 @@ int main(int argv, char **argc)
         {
             while (message[iter] != '#')
             {
-                // std::cerr << iter << std::endl;
                 temp += message[iter];
                 iter++;
             }
-            // std::cerr << temp << std::endl;
             rectify(message, iter);
-            // std::cerr << iter << std::endl;
             all_lines.push_back(temp); // Pushed the current line "as it is" in all_lines (for outputting purpose)
             bool is_it_s = false;
             std::vector<std::pair<std::string, std::string>> empty_shares;
@@ -1016,7 +887,6 @@ int main(int argv, char **argc)
             modified_lines_b.push_back(hi.first);
             actual_lines_b.push_back(hi.second);
             are_it_s.push_back(is_it_s);
-            // std::cerr << temp << std::endl;
             temp = "";
 
             check_for_cancellation(actual_lines_b, are_it_s, modified_lines_b);
@@ -1036,13 +906,10 @@ int main(int argv, char **argc)
         {
             while (message[iter] != '#')
             {
-                // std::cerr << iter << std::endl;
                 temp += message[iter];
                 iter++;
             }
-            // std::cerr << temp << std::endl;
             rectify(message, iter);
-            // std::cerr << iter << std::endl;
             all_lines.push_back(temp); // Pushed the current line "as it is" in all_lines (for outputting purpose)
             bool is_it_s = false;
             std::vector<std::pair<std::string, std::string>> empty_shares;
@@ -1054,38 +921,7 @@ int main(int argv, char **argc)
             modified_lines_b.push_back(hi.first);
             actual_lines_b.push_back(hi.second);
             are_it_s.push_back(is_it_s);
-            // std::cerr << temp << std::endl;
             temp = "";
-
-            // std::cerr << "Printing modified_lines_b "<<std::endl;
-            // for (int i = 0; i < modified_lines_b.size(); i++)
-            // {
-            //     std::cerr<<"the shares are ";
-            //     for (int j = 0; j < (modified_lines_b[i].shares).size(); j++)
-            //     {
-            //         std::cerr<<(modified_lines_b[i].shares)[j].first<<" "<<(modified_lines_b[i].shares)[j].second<<" ";
-            //     }
-            //     std::cerr<<"the price is "<<modified_lines_b[i].price_b<<std::endl;
-            // }
-
-            // std::cerr << "Printing actual_lines_b "<<std::endl;
-            // for (int i = 0; i < actual_lines_b.size(); i++)
-            // {
-            //     std::cerr<<"the shares are ";
-            //     for (int j = 0; j < (actual_lines_b[i].shares).size(); j++)
-            //     {
-            //         std::cerr<<(actual_lines_b[i].shares)[j].first<<" "<<(actual_lines_b[i].shares)[j].second<<" ";
-            //     }
-            //     std::cerr<<"the price is "<<actual_lines_b[i].price_b<<std::endl;
-            // }
-
-            // std::cerr << "Printing are_it_is vector ";
-            // for (int i = 0; i < are_it_s.size(); i++)
-            // {
-            //     std::cerr << are_it_s[i] << " ";
-            // }
-            // std::cerr << std::endl;
-
             part3_check_for_cancellation(actual_lines_b, are_it_s, modified_lines_b);
             part3_check_for_arbitrage(modified_lines_b, actual_lines_b, total_profit, are_it_s);
         }
